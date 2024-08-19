@@ -1,4 +1,4 @@
-def check_distance(place):
+def check(place):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     
     for r in range(5):
@@ -20,5 +20,5 @@ def check_distance(place):
 def solution(places):
     answer = []
     for place in places:
-        answer.append(check_distance(place))
+        answer.append(check(place))
     return answer
