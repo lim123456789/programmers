@@ -1,24 +1,39 @@
+from collections import deque
+
 def solution(board):
-    que = []
-    for x, row in enumerate(board):
-        for y, each in enumerate(row):
-            if board[x][y] == 'R':
-                que.append((x, y, 0))
+    n, m = len(board), len(board[0])
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    start = None
+    goal = None
+    
+    for i in range(n):
+        for j in range(m):
+            if board[i][j] == 'R':
+                start = (i, j)
+            elif board[i][j] == 'G':
+                goal = (i, j)
+
+    queue = deque([(start[0], start[1], 0)])
     visited = set()
-    while que:
-        x, y, length = que.pop(0)
-        if (x, y) in visited:
-            continue
-        if board[x][y] == 'G':
-            return length
-        visited.add((x, y))
-        for diff_x, diff_y in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-            now_x, now_y = x, y
-            while True:
-                next_x, next_y = now_x + diff_x, now_y + diff_y
-                if 0 <= next_x < len(board) and 0 <= next_y < len(board[0]) and board[next_x][next_y] != 'D':
-                    now_x, now_y = next_x, next_y
-                    continue
-                que.append((now_x, now_y, length + 1))
-                break
+    visited.add(start)
+    
+    while queue:
+        x, y, move_count = queue.popleft()
+
+        if (x, y) == goal:
+            return move_count
+
+        for dx, dy in directions:
+            nx, ny = x, y
+
+            while 0 <= nx + dx < n and 0 <= ny + dy < m and board[nx + dx][ny + dy] != 'D':
+                nx += dx
+                ny += dy
+
+            if (nx, ny) not in visited:
+                visited.add((nx, ny))
+                queue.append((nx, ny, move_count + 1))
+
     return -1
